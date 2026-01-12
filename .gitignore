@@ -1,0 +1,33 @@
+# Ambientes virtuais
+venv_lin/
+venv_win/
+venv/
+.venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Variáveis de ambiente
+.env/
+
+# Dados (ETL / SIASUS)
+dados_sia/
+dados_prontos/
+dados_tratados/
+*.parquet
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Logs
+*.log
+
+# SO / Editor
+.DS_Store
+.vscode/
+
+
+# Pasta Streamlit do Projeto
+Streamlit/
