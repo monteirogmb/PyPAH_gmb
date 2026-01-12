@@ -137,7 +137,7 @@ def tratar_dados_sia(
             # Adiciona coluna de arquivo de origem
             df["arquivo_origem"] = pasta_origem
             
-            ## Reestrutuaração das datas
+            ## Adiciona coluna de datas
 
             df['data_ref'] = pd.to_datetime(
                 '20' + df['arquivo_origem'].str[-4:-2] + '-' + df['arquivo_origem'].str[-2:],
@@ -145,6 +145,10 @@ def tratar_dados_sia(
             )
             df['Ano'] = df['data_ref'].dt.year
             df['Mês'] = df['data_ref'].dt.month_name()
+
+            # Adiciona coluna de UF
+
+            df['UF'] = df['arquivo_origem'].str[2:4]
 
             tabela = pa.Table.from_pandas(df, preserve_index=False)
             tabela = tabela.replace_schema_metadata(None)
