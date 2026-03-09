@@ -55,6 +55,7 @@ PyPAH
 ├── .dockerignore
 ├── docker-compose.yml
 └── .gitignore
+```text
 
 
 A pasta dados_sia é onde ficam guardados os dados que serão utilizados dentro do projeto
@@ -92,20 +93,29 @@ A princípio, as pastas dados_sia/ e db/ não estão no GitHub, mas na execuçã
 comandos para executar o projeto:
 
 clonar o projeto do GitHub localmente:
+```text
 git clone https://github.com/repositorio-paineis-publicos/PyPAH
+```text
 
 abra a aplicação do Docker Desktop na sua máquina
 
 no terminal do VS Code e no próprio terminal, abra a pasta do projeto
-pode usar cd caminho_do_projeto (substitua pelo caminho real)
+pode usar: 
+
+```text
+cd caminho_do_projeto #(substitua pelo caminho real)
+```text
 
 caso esteja em um SO Windows
-escreva wsl para ativar o wsl no projeto
-
+escreva:
+```text
+wsl #ativa o wsl no projeto
+```text
 e então no terminal execute o comando:
 
-docker compose up --build -d pypah-dev(ou pypah-user, caso queira acessar só o dash)
-
+```text
+docker compose up --build -d pypah-dev #(ou pypah-user, caso queira acessar só o dash)
+```text
 nesse momento, o seu container começará a ser criado, a instalação de dependências, ao final terá uma mensagem de confirmação da criação do container
 
 após isso, clique no atalho 'Ctrl + Shift + P' para abrir a barra do VS
@@ -114,7 +124,10 @@ aparecerá o nome do container, clique nele
 abrirá uma nova aba do VS agora com o ambiente virtual pronto para execução
 
 para executar o dash, execute o comando:
+
+```text
 streamlit run Streamlit/dash_PyPAH.py
+```text
 
 automaticamente será aberto no seu navegador o app
 caso não abra automaticamente, escreva no navegador:
