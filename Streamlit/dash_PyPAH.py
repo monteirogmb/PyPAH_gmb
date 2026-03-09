@@ -6,19 +6,34 @@ import duckdb
 from pathlib import Path
 
 import requests
+r = requests.get(DB_URL, stream=True)
+with open(DB_PATH, "wb") as f:
+    for chunk in r.iter_content(8192):
+        f.write(chunk)
 
-url = "https://github.com/monteirogmb/pypah-dataset/releases/tag/gold-v1"
+
+DB_PATH = "/tmp/db.duckdb"
+DB_URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/db.duckdb"
 
 if not os.path.exists(DB_PATH):
-    r = requests.get(url)
+    r = requests.get(DB_URL)
     with open(DB_PATH, "wb") as f:
         f.write(r.content)
-ROTULOS_PATH = "https://github.com/monteirogmb/pypah-dataset/releases/tag/td-v1"
+DB_PATH = "/tmp/db.duckdb"
+DB_URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/db.duckdb"
+
+if not os.path.exists(DB_PATH):
+    r = requests.get(DB_URL)
+    with open(DB_PATH, "wb") as f:
+        f.write(r.content)
+        
+ROTULOS_URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/td-v1"
 
 @st.cache_resource
 def get_con():
-    os.makedirs(DB_PATH.parent, exist_ok=True)
-    return duckdb.connect(str(DB_PATH), read_only=True)
+    return duckdb.connect(DB_PATH, read_only=True)
+
+con = get_con()
 
 
 @st.cache_data
