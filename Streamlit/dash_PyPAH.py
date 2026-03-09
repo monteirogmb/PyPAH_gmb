@@ -5,17 +5,20 @@ import plotly.express as px
 import duckdb
 from pathlib import Path
 
-# caminho configurável (Windows ou Docker)
-BASE_PATH = Path(os.getenv("PYPah_BASE_PATH", "/app"))
-DB_PATH = BASE_PATH / "db" / "db.duckdb"
-ROTULOS_PATH = BASE_PATH / "dados_sia" / "rotulos"
+import requests
+
+url = "https://github.com/monteirogmb/pypah-dataset/releases/tag/gold-v1"
+
+if not os.path.exists(DB_PATH):
+    r = requests.get(url)
+    with open(DB_PATH, "wb") as f:
+        f.write(r.content)
+ROTULOS_PATH = "https://github.com/monteirogmb/pypah-dataset/releases/tag/td-v1"
 
 @st.cache_resource
 def get_con():
     os.makedirs(DB_PATH.parent, exist_ok=True)
     return duckdb.connect(str(DB_PATH), read_only=True)
-
-con = get_con()
 
 
 @st.cache_data
@@ -53,19 +56,24 @@ def meses_disponiveis_multi(anos):
 
 @st.cache_data(show_spinner=False)
 def load_dim_estabelecimento():
+    url = f"{ROTULOS_URL}/dim_estabelecimento_ce.parquet"
+
     df = pd.read_parquet(
-        ROTULOS_PATH / "dim_estabelecimento_ce.parquet",
+        url,
         columns=["PA_CODUNI", "label_estabelecimento"]
     )
-    return df
 
+    return df
 
 @st.cache_data(show_spinner=False)
 def load_dim_procedimento():
+    url = f"{ROTULOS_URL}/dim_procedimento.parquet"
+
     df = pd.read_parquet(
-        ROTULOS_PATH / "dim_procedimento.parquet",
+        url,
         columns=["PA_PROC_ID", "label_procedimento"]
     )
+
     return df
 
 
