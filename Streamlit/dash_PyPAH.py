@@ -11,20 +11,23 @@ DATA_DIR = Path("/data")
 DB_PATH = DATA_DIR / "pypah.duckdb"
 
 URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/pypah.duckdb"
+def ensure_db():
+    DATA_DIR.mkdir(parents = True, exist_ok = True)
+    
+    if not DB_PATH.exists():
+        r = requests.get(URL, timeout=120)
+        r.raise_for_status()
+        
+        with open(DB_PATH, "wb") as f:
+            f.write(r.content)
 
-DATA_DIR.mkdirs(exist_ok = True)
-
-if not DB_PATH.exists():
-    r = requests.get(URL)
-    with open(DB_PATH, "wb") as f:
-        f.write(r.content)
-
+ensure_db()
         
 ROTULOS_URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/td-v1"
 
 @st.cache_resource
 def get_con():
-    return duckdb.connect(DB_PATH, read_only=True)
+    return duckdb.connect(str(DB_PATH), read_only=True)
 
 con = get_con()
 
