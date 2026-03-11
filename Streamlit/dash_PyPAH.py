@@ -14,7 +14,7 @@ URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/py
 
 DATA_DIR.mkdirs(exist_ok = True)
 
-if not DB_PATH.exists()
+if not DB_PATH.exists():
     r = requests.get(URL)
     with open(DB_PATH, "wb") as f:
         f.write(r.content)
