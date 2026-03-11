@@ -10,7 +10,7 @@ import requests
 DATA_DIR = Path("data")
 DB_PATH = DATA_DIR / "pypah.duckdb"
 
-URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/pypah.duckdb"
+URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/db.duckdb"
 def ensure_db():
     DATA_DIR.mkdir(parents = True, exist_ok = True)
     
