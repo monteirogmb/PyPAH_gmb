@@ -7,19 +7,26 @@ from pathlib import Path
 
 import requests
 
+
 DATA_DIR = Path("data")
 DB_PATH = DATA_DIR / "pypah.duckdb"
 
 URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/db.duckdb"
 def ensure_db():
-    DATA_DIR.mkdir(parents = True, exist_ok = True)
-    
-    if not DB_PATH.exists():
-        r = requests.get(URL, timeout=120)
+
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    if DB_PATH.exists():
+        return
+
+    st.info("Baixando dataset inicial...")
+
+    with requests.get(URL, stream=True, timeout=120) as r:
         r.raise_for_status()
-        
+
         with open(DB_PATH, "wb") as f:
-            f.write(r.content)
+            for chunk in r.iter_content(8192):
+                f.write(chunk)
 
 ensure_db()
         
