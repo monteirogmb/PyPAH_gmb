@@ -7,7 +7,7 @@ from pathlib import Path
 
 import requests
 
-UCKET = os.environ["R2_BUCKET"]
+BUCKET = os.environ["R2_BUCKET"]
 GOLD = f"s3://{BUCKET}/gold"
 DIMS = f"s3://{BUCKET}/dims"
 
