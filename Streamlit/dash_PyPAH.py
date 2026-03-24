@@ -13,7 +13,7 @@ DIMS = f"s3://{BUCKET}/dims"
 
 con = get_con()
 
-fact = "fact_qtd_val_2021"
+fact = "fact_qtd_val_2021.parquet"
 
 @st.cache_data(show_spinner=True)
 def anos_disponiveis():
