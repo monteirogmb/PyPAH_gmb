@@ -4,8 +4,8 @@ import pandas as pd
 import plotly.express as px
 import duckdb
 from pathlib import Path
-
 import requests
+from connection import get_con
 
 BUCKET = os.environ["R2_BUCKET"]
 GOLD = f"s3://{BUCKET}/gold"
