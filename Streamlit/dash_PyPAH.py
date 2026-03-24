@@ -13,12 +13,14 @@ DIMS = f"s3://{BUCKET}/dims"
 
 con = get_con()
 
+fact = "fact_qtd_val_2021"
+
 @st.cache_data(show_spinner=True)
 def anos_disponiveis():
     return (
         con.execute(f"""
             SELECT DISTINCT Ano 
-            FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet') 
+            FROM read_parquet('{GOLD}/{fact}.parquet') 
             ORDER BY Ano
         """)
         .df()["Ano"]
@@ -31,7 +33,7 @@ def meses_disponiveis_multi(anos):
     return (
         con.execute(f"""
             SELECT Mes
-            FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+            FROM read_parquet('{GOLD}/{fact}.parquet')
             WHERE Ano IN ({anos_sql})
             GROUP BY Mes
             ORDER BY MIN(data_ref)
@@ -59,7 +61,7 @@ def municipios_disponiveis():
     return (
         con.execute(f"""
             SELECT DISTINCT PA_MUNPCN 
-            FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+            FROM read_parquet('{GOLD}/{fact}.parquet')
         """)
         .df()["PA_MUNPCN"]
         .sort_values()
@@ -211,9 +213,9 @@ if municipios:
     where.append(f"PA_MUNPCN IN ({mun_sql})")
 
 
-query = """
+query = f"""
 SELECT * 
-FROM fact_qtd_val_3y
+FROM {fact}
 """
 
 if where:
