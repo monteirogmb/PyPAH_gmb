@@ -20,7 +20,7 @@ def anos_disponiveis():
     return (
         con.execute(f"""
             SELECT DISTINCT Ano 
-            FROM read_parquet('{GOLD}/{fact}.parquet') 
+            FROM read_parquet('{GOLD}/{fact}') 
             ORDER BY Ano
         """)
         .df()["Ano"]
@@ -33,7 +33,7 @@ def meses_disponiveis_multi(anos):
     return (
         con.execute(f"""
             SELECT Mes
-            FROM read_parquet('{GOLD}/{fact}.parquet')
+            FROM read_parquet('{GOLD}/{fact}')
             WHERE Ano IN ({anos_sql})
             GROUP BY Mes
             ORDER BY MIN(data_ref)
@@ -61,7 +61,7 @@ def municipios_disponiveis():
     return (
         con.execute(f"""
             SELECT DISTINCT PA_MUNPCN 
-            FROM read_parquet('{GOLD}/{fact}.parquet')
+            FROM read_parquet('{GOLD}/{fact}')
         """)
         .df()["PA_MUNPCN"]
         .sort_values()
