@@ -7,91 +7,60 @@ from pathlib import Path
 
 import requests
 
-DATA_DIR = Path("data")
-DB_PATH = DATA_DIR / "pypah.duckdb"
-
-URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/gold-v1/db.duckdb"
-def ensure_db():
-    DATA_DIR.mkdir(parents = True, exist_ok = True)
-    
-    if not DB_PATH.exists():
-        r = requests.get(URL, timeout=120)
-        r.raise_for_status()
-        
-        with open(DB_PATH, "wb") as f:
-            f.write(r.content)
-
-ensure_db()
-        
-ROTULOS_URL = "https://github.com/monteirogmb/pypah-dataset/releases/download/td-v1"
-
-@st.cache_resource
-def get_con():
-    return duckdb.connect(str(DB_PATH), read_only=True)
+UCKET = os.environ["R2_BUCKET"]
+GOLD = f"s3://{BUCKET}/gold"
+DIMS = f"s3://{BUCKET}/dims"
 
 con = get_con()
-
-
-@st.cache_data
-def optimize_plotly(fig):
-    fig.update_layout(
-        hovermode="closest",
-        transition_duration=0
-    )
-    return fig
-
 
 @st.cache_data(show_spinner=True)
 def anos_disponiveis():
     return (
-        con.execute("SELECT DISTINCT Ano FROM gold_fact_qtd_val_3y ORDER BY Ano")
+        con.execute(f"""
+            SELECT DISTINCT Ano 
+            FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet') 
+            ORDER BY Ano
+        """)
         .df()["Ano"]
         .tolist()
     )
 
-
 @st.cache_data(show_spinner=True)
 def meses_disponiveis_multi(anos):
     anos_sql = ",".join(map(str, anos))
-
-    q = f"""
-        SELECT Mes
-        FROM gold_fact_qtd_val_3y
-        WHERE Ano IN ({anos_sql})
-        GROUP BY Mes
-        ORDER BY MIN(data_ref)
-    """
-
-    return con.execute(q).df()["Mes"].tolist()
-
+    return (
+        con.execute(f"""
+            SELECT Mes
+            FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+            WHERE Ano IN ({anos_sql})
+            GROUP BY Mes
+            ORDER BY MIN(data_ref)
+        """)
+        .df()["Mes"]
+        .tolist()
+    )
 
 @st.cache_data(show_spinner=False)
 def load_dim_estabelecimento():
-    url = f"{ROTULOS_URL}/dim_estabelecimento_ce.parquet"
-
-    df = pd.read_parquet(
-        url,
-        columns=["PA_CODUNI", "label_estabelecimento"]
-    )
-
-    return df
+    return con.execute(f"""
+        SELECT PA_CODUNI, label_estabelecimento
+        FROM read_parquet('{DIMS}/dim_estabelecimento_ce.parquet')
+    """).df()
 
 @st.cache_data(show_spinner=False)
 def load_dim_procedimento():
-    url = f"{ROTULOS_URL}/dim_procedimento.parquet"
-
-    df = pd.read_parquet(
-        url,
-        columns=["PA_PROC_ID", "label_procedimento"]
-    )
-
-    return df
-
+    return con.execute(f"""
+        SELECT PA_PROC_ID, label_procedimento
+        FROM read_parquet('{DIMS}/dim_procedimento.parquet')
+    """).df()
 
 @st.cache_data(show_spinner=True)
 def municipios_disponiveis():
     return (
-        con.execute("SELECT DISTINCT PA_MUNPCN FROM gold_fact_qtd_val_3y")
+        con.execute(f"""
+            SELECT DISTINCT PA_MUNPCN 
+            FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+        """)
         .df()["PA_MUNPCN"]
         .sort_values()
         .tolist()
@@ -244,7 +213,7 @@ if municipios:
 
 query = """
 SELECT * 
-FROM gold_fact_qtd_val_3y
+FROM fact_qtd_val_3y
 """
 
 if where:
