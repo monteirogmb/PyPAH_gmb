@@ -3,7 +3,7 @@ import os
 import streamlit as st
 
 @st.cache_resource
-def get_connection():
+def get_con():
     con = duckdb.connect()
     con.execute("INSTALL httpfs; LOAD httpfs;")
     con.execute(f"""
@@ -14,7 +14,3 @@ def get_connection():
         SET s3_url_style='path';
     """)
     return con
-
-@st.cache_data(ttl=3600)
-def query(_con, sql):
-    return _con.execute(sql).df()
