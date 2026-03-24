@@ -7,7 +7,6 @@ COPY requirements/requirements_user.txt .
 RUN pip install --no-cache-dir -r requirements_user.txt
 
 COPY Streamlit /app/Streamlit
-COPY dados_sia/rotulos /app/dados_sia/rotulos
 
 EXPOSE 8501
 
