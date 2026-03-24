@@ -215,8 +215,7 @@ if municipios:
 
 query = f"""
 SELECT * 
-FROM {fact}
-"""
+FROM read_parquet('{GOLD}/{fact}')
 
 if where:
     query += " WHERE " + " AND ".join(where)
