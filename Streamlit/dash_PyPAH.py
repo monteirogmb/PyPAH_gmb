@@ -2,16 +2,25 @@ import requests
 import os
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 
 API_URL = os.environ["API_URL"]
 
 
 def _get(endpoint: str, params: dict = None):
     url = f"{API_URL}/api/{endpoint}"
-    response = requests.get(url, params=params, timeout=30)
+    response = requests.get(url, params=params, timeout=120)
     response.raise_for_status()
     return response.json()
 
+
+@st.cache_data
+def optimize_plotly(fig):
+    fig.update_layout(
+        hovermode="closest",
+        transition_duration=0
+    )
+    return fig
 
 @st.cache_data(ttl=3600)
 def anos_disponiveis():
