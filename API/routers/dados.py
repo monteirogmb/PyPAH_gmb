@@ -10,6 +10,9 @@ BUCKET = os.environ.get("R2_BUCKET", "")
 GOLD = f"s3://{BUCKET}/gold"
 DIMS = f"s3://{BUCKET}/dims"
 
+# Lê todas as partições gold usando hive partitioning (ano=YYYY/mes=MM/dados.parquet)
+GOLD_GLOB = f"{GOLD}/**/*.parquet"
+
 
 @router.get("/anos")
 def anos_disponiveis():
@@ -20,7 +23,7 @@ def anos_disponiveis():
 
     result = get_con().execute(f"""
         SELECT DISTINCT Ano
-        FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+        FROM read_parquet('{GOLD_GLOB}', hive_partitioning=false)
         ORDER BY Ano
     """).df()["Ano"].tolist()
 
@@ -39,7 +42,7 @@ def meses_disponiveis(anos: List[int] = Query(...)):
 
     result = get_con().execute(f"""
         SELECT Mes
-        FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+        FROM read_parquet('{GOLD_GLOB}', hive_partitioning=false)
         WHERE Ano IN ({anos_sql})
         GROUP BY Mes
         ORDER BY MIN(data_ref)
@@ -58,7 +61,7 @@ def municipios_disponiveis():
 
     result = get_con().execute(f"""
         SELECT DISTINCT PA_MUNPCN
-        FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')
+        FROM read_parquet('{GOLD_GLOB}', hive_partitioning=false)
         ORDER BY PA_MUNPCN
     """).df()["PA_MUNPCN"].tolist()
 
@@ -141,7 +144,7 @@ def dados_filtrados(
         proc_sql = ",".join(f"'{p}'" for p in pa_proc_ids)
         where.append(f"PA_PROC_ID IN ({proc_sql})")
 
-    query = f"SELECT * FROM read_parquet('{GOLD}/fact_qtd_val_3y.parquet')"
+    query = f"SELECT * FROM read_parquet('{GOLD_GLOB}', hive_partitioning=false)"
 
     if where:
         query += " WHERE " + " AND ".join(where)

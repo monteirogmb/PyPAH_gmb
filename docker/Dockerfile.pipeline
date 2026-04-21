@@ -1,0 +1,27 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Dependências de sistema necessárias para PySUS / dbfread / compilação
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libxml2 \
+    libxml2-dev \
+    libxslt1-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala dependências Python do pipeline
+COPY requirements/requirements_pipeline.txt .
+RUN pip install --no-cache-dir -r requirements_pipeline.txt
+
+# Copia apenas os módulos necessários para o pipeline
+COPY Pipeline /app/Pipeline
+
+# Garante que Pipeline é um pacote Python
+RUN touch /app/Pipeline/__init__.py
+
+# Comando padrão: roda o orquestrador incremental
+# Para carga histórica, sobrescreva o CMD no Render com:
+#   python -m Pipeline.pipeline_runner --ano-inicio 2018 --mes-inicio 1
+CMD ["python", "-m", "Pipeline.pipeline_runner"]

@@ -36,3 +36,23 @@ services:
       - .env
     depends_on:
       - pypah-api
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Pipeline incremental
+  # No Render: use como Cron Job com schedule "0 3 10 * *" (todo dia 10, 3h)
+  # Localmente: rode com `docker compose run --rm pypah-pipeline`
+  #
+  # Para carga histórica completa:
+  #   docker compose run --rm pypah-pipeline \
+  #     python -m Pipeline.pipeline_runner --ano-inicio 2018 --mes-inicio 1
+  # ─────────────────────────────────────────────────────────────────────────
+  pypah-pipeline:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pipeline
+    container_name: pypah-pipeline
+    env_file:
+      - .env
+    # Evita que suba automaticamente com `docker compose up`
+    profiles:
+      - pipeline

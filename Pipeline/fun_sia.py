@@ -391,9 +391,10 @@ col_interesse = ["PA_MUNPCN", "PA_PROC_ID", "PA_TPFIN", "PA_NIVCPL", "PA_CIDPRI"
            "PA_PERMAN", "PA_ALTA", "PA_TRANSF", "PA_CODUNI", "PA_AUTORIZ", 
            "PA_CBOCOD", "PA_QTDPRO", "PA_QTDAPR", "PA_VALPRO", "PA_VALAPR"]
 
-#baixar_dbc(grupo="PA", estado = 'CE', anos = range(2018, 2021), meses = [1, 2])
-#conv_dbc_para_pqt(pasta_origem=PASTA_DBC, pasta_destino=PASTA_SILVER)
-#tratar_dados_sia(pasta=PASTA_SILVER, colunas = col_interesse, arquivo_saida = 'arquivo_silver.parquet')
-move_arquivo("arquivo_silver.parquet", pasta_destino=PASTA_SILVER)
-#estab_ce_label()
-#download_proc_label()
+# Para rodar manualmente (desenvolvimento), descomente as linhas abaixo:
+# baixar_dbc(grupo="PA", estado='CE', anos=range(2018, 2021), meses=[1, 2])
+# conv_dbc_para_pqt(pasta_origem=PASTA_DBC, pasta_destino=PASTA_SILVER)
+# tratar_dados_sia(pasta=PASTA_SILVER, colunas=col_interesse, arquivo_saida='arquivo_silver.parquet')
+# move_arquivo("arquivo_silver.parquet", pasta_destino=PASTA_SILVER)
+# estab_ce_label()
+# download_proc_label()
