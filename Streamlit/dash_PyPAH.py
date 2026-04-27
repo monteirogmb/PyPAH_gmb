@@ -193,6 +193,10 @@ df_filtro = dados_filtrados(
     pa_proc_ids=pa_proc_ids
 )
 
+st.write(df_filtro.columns.tolist())
+st.write(df_filtro.head(3))
+
+
 # Renomeia tipos para exibição nos gráficos
 df_filtro["data_ref"] = pd.to_datetime(df_filtro["data_ref"])
 
@@ -238,12 +242,20 @@ quant_bar = (df_filtro.copy()
 
 # Valores
 
-df_linha_val_long = valores_bar.copy()
+df_linha_val_long = df_filtro.melt(
+    id_vars="data_ref",
+    value_vars=["PA_VALPRO", "PA_VALAPR"],
+    var_name="tipo", value_name="valor"
+).replace({"PA_VALPRO": "Produzido", "PA_VALAPR": "Aprovado"}).sort_values("tipo")
 
 
 # Quantidade
 
-df_linha_qtd_long = quant_bar.copy()
+df_linha_qtd_long = df_filtro.melt(
+    id_vars="data_ref",
+    value_vars=["PA_QTDPRO", "PA_QTDAPR"],
+    var_name="tipo", value_name="quantidade"
+).replace({"PA_QTDPRO": "Produzido", "PA_QTDAPR": "Aprovado"}).sort_values("tipo")
 
 
 ## =========================
