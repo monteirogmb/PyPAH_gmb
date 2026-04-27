@@ -193,9 +193,6 @@ df_filtro = dados_filtrados(
     pa_proc_ids=pa_proc_ids
 )
 
-st.write(df_filtro.columns.tolist())
-st.write(df_filtro.head(3))
-
 
 # Renomeia tipos para exibição nos gráficos
 df_filtro["data_ref"] = pd.to_datetime(df_filtro["data_ref"])
@@ -247,6 +244,8 @@ df_linha_val_long = df_filtro.melt(
     value_vars=["PA_VALPRO", "PA_VALAPR"],
     var_name="tipo", value_name="valor"
 ).replace({"PA_VALPRO": "Produzido", "PA_VALAPR": "Aprovado"}).sort_values("tipo")
+
+
 
 
 # Quantidade
