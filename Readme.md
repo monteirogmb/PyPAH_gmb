@@ -4,6 +4,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![Docker](https://img.shields.io/badge/Docker-29.2.1-blue)
+![WSL](https://img.shields.io/badge/WSL-2.6.1.0-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red)
 ![DuckDB](https://img.shields.io/badge/DuckDB-Analytics-yellow)
 ![Parquet](https://img.shields.io/badge/Parquet-Columnar%20Storage-purple)
@@ -146,7 +147,7 @@ Os dados são disponibilizados mensalmente em formato `.dbc` no FTP público do 
 # Organização das Pastas do Projeto
 
 ```text
-PyPAH_gmb/
+PyPAH/
 │
 ├── API/
 │   ├── main.py
@@ -177,8 +178,8 @@ PyPAH_gmb/
 │
 ├── docs/
 │   ├── arquitetura_PyPAH.png
-│   ├── app_com_filtro.png
-│   └── app_sem_filtro.png
+│   ├── PyPAH_com_filtros.png
+│   └── PyPAH_sem_filtros.png
 │
 ├── .env
 ├── .dockerignore
@@ -198,11 +199,11 @@ Todo o armazenamento persistente do projeto vive no bucket do Cloudflare R2:
 pypah-gold/
 │
 ├── gold/
-│   ├── ano=2018/
+│   ├── ano=2024/
 │   │   ├── mes=01/dados.parquet
 │   │   ├── mes=02/dados.parquet
 │   │   └── ...
-│   ├── ano=2019/
+│   ├── ano=2025/
 │   │   └── ...
 │   ├── ...
 │   └── consolidated.parquet       ← lido pela API
@@ -269,11 +270,11 @@ O endpoint `/dados` aplica os filtros selecionados pelo usuário e retorna os da
 
 ### Visualização geral
 
-![Dashboard geral](docs/app_sem_filtro.png)
+![Dashboard geral](docs/PyPAH_sem_filtros.png)
 
 ### Aplicação de filtros
 
-![Dashboard com filtros](docs/app_com_filtro.png)
+![Dashboard com filtros](docs/PyPAH_com_filtros.png)
 
 A aplicação permite explorar os dados de produção ambulatorial do Ceará através de filtros interativos por ano, mês, município, estabelecimento e procedimento, com visualizações de valores e quantidades produzidos e aprovados ao longo do tempo.
 
@@ -301,8 +302,52 @@ As mesmas variáveis devem ser configuradas nos serviços do Render.
 
 ```bash
 git clone https://github.com/repositorio-paineis-publicos/PyPAH
-cd PyPAH_gmb
 ```
+
+---
+
+## Acessar a pasta do projeto
+
+```bash
+cd PyPAH
+```
+
+---
+
+## Caso esteja utilizando Windows, ativar o WSL
+
+```bash
+wsl
+```
+
+---
+
+## Construir o container Docker
+
+Para desenvolvimento completo:
+
+```bash
+docker compose up --build -d pypah-dev
+```
+---
+
+## Conectar ao container no VS Code
+
+Pressione:
+
+```
+Ctrl + Shift + P
+```
+
+Digite:
+
+```
+Dev Containers: Attach to Running Container
+```
+
+Selecione o container desejado.
+
+---
 
 ## Configurar as variáveis de ambiente
 
