@@ -4,6 +4,9 @@ import os
 from API.connection import get_con
 from API.cache import make_key, get_cached, set_cached
 
+from dotenv import load_dotenv
+load_dotenv()
+
 router = APIRouter()
 
 BUCKET = os.environ.get("R2_BUCKET", "")
@@ -11,7 +14,7 @@ GOLD = f"s3://{BUCKET}/gold"
 DIMS = f"s3://{BUCKET}/dims"
 
 # Lê todas as partições gold usando hive partitioning (ano=YYYY/mes=MM/dados.parquet)
-CONSOLIDATED = f"{GOLD}/consolidated.parquet"
+CONSOLIDATED = f"{GOLD}/consolidated_sample_100k.parquet"
 
 
 @router.get("/anos")
@@ -149,13 +152,21 @@ def dados_filtrados(
     query = f"""
         SELECT
             data_ref,
+            PA_MUNPCN,
+            PA_CODUNI,
+            PA_PROC_ID,
+            Ano,
+            Mes,
             SUM(PA_VALPRO) AS PA_VALPRO,
             SUM(PA_VALAPR) AS PA_VALAPR,
             SUM(PA_QTDPRO) AS PA_QTDPRO,
             SUM(PA_QTDAPR) AS PA_QTDAPR
-        FROM read_parquet('{CONSOLIDATED}')
-        {where_clause}
-        GROUP BY data_ref
+        FROM (
+            SELECT * FROM read_parquet('{CONSOLIDATED}')
+            {where_clause}
+            LIMIT 100000
+            )
+        GROUP BY data_ref, PA_MUNPCN, PA_CODUNI, PA_PROC_ID, Ano, Mes
         ORDER BY data_ref
     """
 
