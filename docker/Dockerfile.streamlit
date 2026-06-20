@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements/requirements_pipeline.txt .
-RUN pip install --no-cache-dir -r requirements_pipeline.txt
+COPY requirements/requirements_dev.txt .
+RUN pip install --no-cache-dir -r requirements_dev.txt
 
 COPY . .
 
