@@ -14,7 +14,7 @@ GOLD = f"s3://{BUCKET}/gold"
 DIMS = f"s3://{BUCKET}/dims"
 
 # Lê todas as partições gold usando hive partitioning (ano=YYYY/mes=MM/dados.parquet)
-CONSOLIDATED = f"{GOLD}/consolidated_sample_100k.parquet"
+CONSOLIDATED = f"{GOLD}/consolidated_sample_30k.parquet"
 
 
 @router.get("/anos")
